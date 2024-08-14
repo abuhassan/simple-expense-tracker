@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import colors from "colors";
 import morgan from "morgan";
+import { errorHandler } from "./middleware/errorMiddleware.js";
 import connectDB from "./config/db.js";
 
 dotenv.config();
@@ -16,6 +17,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/transactions", transactions);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 8000;
 
