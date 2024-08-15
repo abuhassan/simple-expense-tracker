@@ -1,19 +1,26 @@
 import mongoose from "mongoose";
 
 const transactionSchema = new mongoose.Schema({
-  text: {
+  description: {
     type: String,
-    trim: true,
-    required: [true, "Please add some text"],
+    required: [true, "Please add a description"],
   },
   amount: {
     type: Number,
     required: [true, "Please add a positive or negative number"],
+    validate: {
+      validator: function (value) {
+        return !isNaN(value); // Ensures the value is a number
+      },
+      message: "Please add a positive or negative number",
+    },
   },
-  createdAt: {
+  date: {
     type: Date,
     default: Date.now,
   },
 });
 
-export default mongoose.model("Transaction", transactionSchema);
+const Transaction = mongoose.model("Transaction", transactionSchema);
+
+export default Transaction;
