@@ -8,6 +8,7 @@ import {
   handleUnhandledRejection,
 } from "./middleware/globalErrorHandler.js";
 import connectDB from "./config/db.js";
+import users from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/transactions", transactions);
+app.use("/api/users", users);
 
 app.use(errorHandler);
 

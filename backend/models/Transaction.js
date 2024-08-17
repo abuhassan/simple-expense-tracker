@@ -1,6 +1,13 @@
 import mongoose from "mongoose";
+import User from "./userModel.js";
 
 const transactionSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: [true, "User is required"],
+  },
+
   description: {
     type: String,
     required: [true, "Please add a description"],

@@ -1,4 +1,5 @@
 import Transaction from "../models/Transaction.js";
+import User from "../models/userModel.js";
 import asyncHandler from "express-async-handler";
 import transactionEmitter from "../events.js";
 
@@ -7,7 +8,7 @@ import transactionEmitter from "../events.js";
 // @access Public
 
 export const getTransactions = asyncHandler(async (req, res, next) => {
-  const transactions = await Transaction.find();
+  const transactions = await Transaction.find({ user: req.user._id });
 
   res.status(200).json(transactions);
 });
@@ -16,25 +17,13 @@ export const getTransactions = asyncHandler(async (req, res, next) => {
 // @access Public
 
 export const addTransaction = asyncHandler(async (req, res, next) => {
-  const { description, amount: rawAmount, date } = req.body;
-
-  // Convert the amount to a number
-  const amount = Number(rawAmount);
-
-  console.log("Received description: ", description);
-
-  console.log("Received amount: ", amount);
-  console.log("Is amount a number? ", typeof amount === "number");
-
-  if (typeof amount !== "number" || isNaN(amount)) {
-    res.status(400).json({ message: "Amount must be a valid number" });
-    return;
-  }
+  const { description, amount, date } = req.body;
 
   const newTransaction = new Transaction({
     description,
     amount,
     date,
+    user: req.user._id, // Add the user to the transaction
   });
 
   const savedTransaction = await newTransaction.save();
@@ -54,6 +43,20 @@ export const updateTransaction = asyncHandler(async (req, res, next) => {
   if (!transaction) {
     res.status(404);
     throw new Error("Transaction not found");
+  }
+
+  const user = await User.findById(req.user._id);
+
+  // Check for user
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
+  // Check if the user is the owner of the transaction
+  if (transaction.user.toString() !== req.user._id.toString()) {
+    res.status(401);
+    throw new Error("You are not authorized to update this transaction");
   }
 
   const updatedTransaction = await Transaction.findByIdAndUpdate(
@@ -76,6 +79,20 @@ export const deleteTransaction = asyncHandler(async (req, res, next) => {
   if (!transaction) {
     res.status(404);
     throw new Error("Transaction not found");
+  }
+
+  const user = await User.findById(req.user._id);
+
+  // Check for user
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
+  // Check if the user is the owner of the transaction
+  if (transaction.user.toString() !== req.user._id.toString()) {
+    res.status(401);
+    throw new Error("You are not authorized to delete this transaction");
   }
 
   await Transaction.findByIdAndDelete(req.params.id);
