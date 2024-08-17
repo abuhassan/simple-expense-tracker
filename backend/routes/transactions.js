@@ -6,13 +6,16 @@ import {
   deleteTransaction,
   updateTransaction,
 } from "../controllers/transactions.js";
-import { protect } from "../middleware/authMiddleware.js";
+import { protect, requireAdmin } from "../middleware/authMiddleware.js";
 
-router.route("/").get(protect, getTransactions).post(protect, addTransaction);
+router
+  .route("/")
+  .get(protect, requireAdmin, getTransactions)
+  .post(protect, requireAdmin, addTransaction);
 
 router
   .route("/:id")
-  .delete(protect, deleteTransaction)
-  .put(protect, updateTransaction);
+  .delete(protect, requireAdmin, deleteTransaction)
+  .put(protect, requireAdmin, updateTransaction);
 
 export default router;

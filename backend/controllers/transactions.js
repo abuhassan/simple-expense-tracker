@@ -1,5 +1,5 @@
 import Transaction from "../models/Transaction.js";
-import User from "../models/userModel.js";
+// import User from "../models/userModel.js";
 import asyncHandler from "express-async-handler";
 import transactionEmitter from "../events.js";
 
@@ -7,7 +7,7 @@ import transactionEmitter from "../events.js";
 // @route GET /api/transactions
 // @access Public
 
-export const getTransactions = asyncHandler(async (req, res, next) => {
+export const getTransactions = asyncHandler(async (req, res) => {
   const transactions = await Transaction.find({ user: req.user._id });
 
   res.status(200).json(transactions);
@@ -16,7 +16,7 @@ export const getTransactions = asyncHandler(async (req, res, next) => {
 // @route POST /api/transactions
 // @access Public
 
-export const addTransaction = asyncHandler(async (req, res, next) => {
+export const addTransaction = asyncHandler(async (req, res) => {
   const { description, amount, date } = req.body;
 
   const newTransaction = new Transaction({

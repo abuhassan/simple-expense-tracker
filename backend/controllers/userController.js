@@ -79,6 +79,15 @@ export const getMe = asyncHandler(async (req, res) => {
   });
 });
 
+// @desc Get all users (Admin only)
+// @route GET /api/users/all
+// @access Private/Admin
+export const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
+});
+
+
 // Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
