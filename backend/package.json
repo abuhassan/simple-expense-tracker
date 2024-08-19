@@ -4,7 +4,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server",
+    "server": "node  server",
     "dev": "node --watch server",
     "client": " npm start --prefix client "
   },
