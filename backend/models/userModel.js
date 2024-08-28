@@ -1,27 +1,37 @@
+// userModel.js
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Please enter your name"],
+      required: true,
     },
     email: {
       type: String,
-      required: [true, "Please enter an email"],
+      required: true,
       unique: true,
     },
     password: {
       type: String,
-      required: [true, "Please enter a password"],
+      required: true,
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
-      default: "user",
+      enum: ["masterAdmin", "orgSupervisor", "orgUser", "individual"],
+      default: "individual",
+    },
+    organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organization",
+      required: function () {
+        return this.role === "orgSupervisor" || this.role === "orgUser";
+      },
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true, // Automatically adds createdAt and updatedAt fields
+  }
 );
 
 const User = mongoose.model("User", userSchema);

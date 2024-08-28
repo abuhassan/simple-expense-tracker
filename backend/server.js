@@ -15,6 +15,7 @@ dotenv.config();
 connectDB();
 
 import transactions from "./routes/transactions.js";
+import organizationRoutes from "./routes/organizationRoutes.js";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/transactions", transactions);
 app.use("/api/users", users);
+app.use("/api/organizations", organizationRoutes);
 
 app.use(errorHandler);
 

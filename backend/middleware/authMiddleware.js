@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 
+// Middleware to protect routes (requires valid token)
 export const protect = asyncHandler(async (req, res, next) => {
   let token;
 
@@ -32,13 +33,21 @@ export const protect = asyncHandler(async (req, res, next) => {
   }
 });
 
-// Middleware to check if the user is an admin
-
-export const requireAdmin = (req, res, next) => {
-  if (req.user && req.user.role === "admin") {
-    next();
-  } else {
-    res.status(403);
-    throw new Error("Access denied. Admins only.");
-  }
+// Middleware to check if the user has a specific role
+export const requireRole = (...roles) => {
+  return (req, res, next) => {
+    if (req.user && roles.includes(req.user.role)) {
+      next();
+    } else {
+      res.status(403);
+      throw new Error(
+        `Access denied. Requires one of the following roles: ${roles.join(
+          ", "
+        )}`
+      );
+    }
+  };
 };
+
+// Usage example for Admin routes
+export const requireAdmin = requireRole("admin", "masterAdmin");

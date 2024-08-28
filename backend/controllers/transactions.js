@@ -45,16 +45,14 @@ export const updateTransaction = asyncHandler(async (req, res, next) => {
     throw new Error("Transaction not found");
   }
 
-  const user = await User.findById(req.user._id);
-
   // Check for user
-  if (!user) {
+  if (!req.user) {
     res.status(401);
     throw new Error("User not found");
   }
 
   // Check if the user is the owner of the transaction
-  if (transaction.user.toString() !== req.user._id.toString()) {
+  if (transaction.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("You are not authorized to update this transaction");
   }
@@ -81,16 +79,14 @@ export const deleteTransaction = asyncHandler(async (req, res, next) => {
     throw new Error("Transaction not found");
   }
 
-  const user = await User.findById(req.user._id);
-
   // Check for user
-  if (!user) {
+  if (!req.user) {
     res.status(401);
     throw new Error("User not found");
   }
 
   // Check if the user is the owner of the transaction
-  if (transaction.user.toString() !== req.user._id.toString()) {
+  if (transaction.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("You are not authorized to delete this transaction");
   }
