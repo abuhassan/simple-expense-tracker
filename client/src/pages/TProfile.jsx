@@ -1,3 +1,4 @@
+// Profile.jsx
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUser, reset } from "../features/auth/authSlice"; // Assuming you have an updateUser action
@@ -57,35 +58,56 @@ function Profile() {
 
   return (
     <section className="profile">
-      <h1>Profile</h1>
+      <h1>Your Profile</h1>
       <form onSubmit={onSubmit}>
-        <div>
+        <div className="form-group">
           <label htmlFor="name">Name</label>
-          <input type="text" name="name" value={name} onChange={onChange} />
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={name}
+            onChange={onChange}
+          />
         </div>
-        <div>
+
+        <div className="form-group">
           <label htmlFor="email">Email</label>
-          <input type="email" name="email" value={email} onChange={onChange} />
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={email}
+            onChange={onChange}
+            disabled
+          />
         </div>
-        <div>
-          <label htmlFor="password">Password</label>
+
+        <div className="form-group">
+          <label htmlFor="password">New Password</label>
           <input
             type="password"
+            id="password"
             name="password"
             value={password}
             onChange={onChange}
           />
         </div>
-        <div>
-          <label htmlFor="password2">Confirm Password</label>
+
+        <div className="form-group">
+          <label htmlFor="password2">Confirm New Password</label>
           <input
             type="password"
+            id="password2"
             name="password2"
             value={password2}
             onChange={onChange}
           />
         </div>
-        <button type="submit">Update</button>
+
+        <button type="submit" className="btn btn-primary">
+          Update Profile
+        </button>
       </form>
     </section>
   );

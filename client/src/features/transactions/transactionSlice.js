@@ -95,7 +95,7 @@ export const transactionSlice = createSlice({
       .addCase(getTransactions.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.goals = action.payload;
+        state.transactions = action.payload;
       })
       .addCase(getTransactions.rejected, (state, action) => {
         state.isLoading = false;
@@ -108,8 +108,8 @@ export const transactionSlice = createSlice({
       .addCase(deleteTransaction.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.goals = state.goals.filter(
-          (goal) => goal._id !== action.payload.id
+        state.transactions = state.transactions.filter(
+          (transaction) => transaction._id !== action.payload.id
         );
       })
       .addCase(deleteTransaction.rejected, (state, action) => {

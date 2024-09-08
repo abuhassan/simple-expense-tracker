@@ -9,6 +9,7 @@ import {
 } from "./middleware/globalErrorHandler.js";
 import connectDB from "./config/db.js";
 import users from "./routes/userRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api/transactions", transactions);
 app.use("/api/users", users);
 app.use("/api/organizations", organizationRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.use(errorHandler);
 

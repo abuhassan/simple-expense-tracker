@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import asyncHandler from "express-async-handler";
-import User from "../models/userModel.js";
+import User from "../models/UserModel.js";
 
 // Generate JWT with role included
 const generateToken = (id, role) => {

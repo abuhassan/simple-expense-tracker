@@ -1,60 +1,75 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import adminService from "./adminService";
 
-// Async thunk to fetch admin panel data
-export const fetchAdminPanelData = createAsyncThunk(
-  "admin/fetchAdminPanelData",
+export const fetchUsers = createAsyncThunk(
+  "admin/fetchUsers",
   async (_, thunkAPI) => {
     try {
-      return await adminService.getAdminPanelData();
+      return await adminService.getUsers();
     } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      return thunkAPI.rejectWithValue(message);
+      console.error("Error fetching users", error);
+      return thunkAPI.rejectWithValue(
+        error.response?.data || error.message || " Unknown error"
+      );
     }
   }
 );
 
-const initialState = {
-  adminPanelData: {
-    users: [],
-    transactions: [],
-    // Add more fields as needed
-  },
-  isLoading: false,
-  isError: false,
-  message: "",
-};
+export const fetchAllTransactions = createAsyncThunk(
+  "admin/fetchAllTransactions",
+  async (_, thunkAPI) => {
+    try {
+      return await adminService.getAllTransactions();
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+      return thunkAPI.rejectWithValue(
+        error.response?.data || error.message || "Unknown error"
+      );
+    }
+  }
+);
 
 const adminSlice = createSlice({
   name: "admin",
-  initialState,
+  initialState: {
+    users: [],
+    transactions: [],
+    isLoading: false,
+    isError: false,
+    message: "",
+  },
   reducers: {
     reset: (state) => {
-      state.isLoading = false;
-      state.isError = false;
-      state.message = "";
-      state.adminPanelData = { users: [], transactions: [] };
+      // eslint-disable-next-line no-undef
+      Object.assign(state, initialState);
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchAdminPanelData.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(fetchAdminPanelData.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.adminPanelData = action.payload;
-      })
-      .addCase(fetchAdminPanelData.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload;
-      });
+    extraReducers: (builder) => {
+      builder
+        .addCase(fetchUsers.pending, (state) => {
+          state.isLoading = true;
+        })
+        .addCase(fetchUsers.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.users = action.payload;
+        })
+        .addCase(fetchUsers.rejected, (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+          state.message = action.payload || "Failed to fetch users";
+        })
+        .addCase(fetchAllTransactions.pending, (state) => {
+          state.isLoading = true;
+        })
+        .addCase(fetchAllTransactions.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.transactions = action.payload;
+        })
+        .addCase(fetchAllTransactions.rejected, (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+          state.message = action.payload || "Failed to fetch transactions";
+        });
+    },
   },
 });
 

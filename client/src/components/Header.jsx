@@ -22,57 +22,52 @@ function Header() {
   };
 
   return (
-    <header className="header">
-      <div className="logo">
-        <Link to="/">Expense Tracker test</Link>
-      </div>
-      <ul>
-        {/* Conditional rendering based on user presence and role */}
-        {user ? (
-          <>
-            {/* Links visible to all logged-in users */}
-            <li>
-              <Link to="/dashboard">Dashboard </Link>
-            </li>
-
-            {/* Use utility functions to conditionally render based on roles */}
-            {canAccessAdminPanel(user) && (
-              <li>
-                <Link to="/admin">
-                  <FaTools /> Admin Panel
+    <>
+      <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
+        <Link to="/" className="text-2xl font-bold">
+          <FaTools className="inline-block mr-2" />
+          Expense Tracker
+        </Link>
+        <nav>
+          {user ? (
+            <div className="flex items-center">
+              <Link to="/dashboard" className="mr-4">
+                Dashboard
+              </Link>
+              {canManageOrganization(user) && (
+                <Link to="/organization" className="mr-4">
+                  Organization
                 </Link>
-              </li>
-            )}
-            {canManageOrganization(user) && (
-              <li>
-                <Link to="/manage">Manage Organization</Link>
-              </li>
-            )}
-
-            {/* Logout button for all logged-in users */}
-            <li>
-              <button className="btn" onClick={onLogout}>
-                <FaSignOutAlt /> Logout
+              )}
+              {canAccessAdminPanel(user) && (
+                <Link to="/admin" className="mr-4">
+                  Admin
+                </Link>
+              )}
+              <Link to="/profile" className="mr-4">
+                <FaUser className="inline-block mr-2" />
+                Profile
+              </Link>
+              <button onClick={onLogout}>
+                <FaSignOutAlt className="inline-block mr-2" />
+                Logout
               </button>
-            </li>
-          </>
-        ) : (
-          <>
-            {/* Public links */}
-            <li>
-              <Link to="/login">
-                <FaSignInAlt /> Login
+            </div>
+          ) : (
+            <>
+              <Link to="/login" className="mr-4">
+                <FaSignInAlt className="inline-block mr-2" />
+                Login
               </Link>
-            </li>
-            <li>
               <Link to="/register">
-                <FaUser /> Register
+                <FaUser className="inline-block mr-2" />
+                Register
               </Link>
-            </li>
-          </>
-        )}
-      </ul>
-    </header>
+            </>
+          )}
+        </nav>
+      </header>
+    </>
   );
 }
 

@@ -1,22 +1,20 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import TransactionForm from "../components/TransactionForm";
-import TransactionItem from "../components/TransactionItem";
-import Spinner from "../components/Spinner";
-
+import { useNavigate } from "react-router-dom";
 import {
   getTransactions,
   reset,
 } from "../features/transactions/transactionSlice";
+import Spinner from "../components/Spinner";
+// import TransactionItem from "../components/TransactionItem";
+import Graph from "../components/Graph";
+import Form from "../components/Form";
 
 function Dashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  // Correct selectors for user and transactions state
-  const { user } = useSelector((state) => state.auth); // Assuming user is in the auth slice
-  const { transactions, isLoading, isError, message } = useSelector(
+  const { user } = useSelector((state) => state.auth);
+  const { isLoading, isError, message } = useSelector(
     (state) => state.transactions
   );
 
@@ -24,7 +22,7 @@ function Dashboard() {
     if (!user) {
       navigate("/login");
     } else {
-      dispatch(getTransactions()); // Fetch transactions for the logged in user }(admin or non-admin)
+      dispatch(getTransactions());
     }
 
     if (isError) {
@@ -34,36 +32,28 @@ function Dashboard() {
     return () => {
       dispatch(reset());
     };
-  }, [user, isError, navigate, dispatch, message]);
+  }, [user, isError, message, navigate, dispatch]);
 
   if (isLoading) {
     return <Spinner />;
   }
 
   return (
-    <>
-      <section className="heading">
-        <h1>Welcome {user && user.name}</h1>
-        <p>Expense Dashboard</p>
-      </section>
+    <div className="container mx-auto p-4">
+      <h1 className=" text-3xl font-bold text-center mb-8">
+        Welcome to your Dashboard, {user && user.name}
+      </h1>
 
-      <TransactionForm />
+      {/* grid columns */}
 
-      <section className="content">
-        {transactions.length > 0 ? (
-          <div className="transactions">
-            {transactions.map((transaction) => (
-              <TransactionItem
-                key={transaction._id}
-                transaction={transaction}
-              />
-            ))}
-          </div>
-        ) : (
-          <p>You have not registered any expense</p>
-        )}
-      </section>
-    </>
+      <div className="grid md:grid-cols-2 gap-4">
+        {/* Chart */}
+        <Graph></Graph>
+
+        {/* Form */}
+        <Form></Form>
+      </div>
+    </div>
   );
 }
 
